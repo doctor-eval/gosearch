@@ -1,4 +1,4 @@
-module github.com/micheleriva/gosearch
+module github.com/doctor-evil/gosearch
 
 go 1.14
 
