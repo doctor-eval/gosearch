@@ -1,4 +1,4 @@
-package main
+package gosearch
 
 func ContainsDoc(indexedTokenDocs []IndexContent, target string) bool {
 	return IndexedDocIndex(indexedTokenDocs, target) >= 0
