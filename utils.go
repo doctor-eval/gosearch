@@ -6,7 +6,7 @@ func ContainsDoc(indexedTokenDocs []IndexContent, target string) bool {
 
 func IndexedDocIndex(indexedTokenDocs []IndexContent, target string) int {
 	for index, doc := range indexedTokenDocs {
-		if doc.Token == target {
+		if doc.DocumentID == target {
 			return index
 		}
 	}
@@ -18,7 +18,7 @@ func RemoveToken(index []IndexContent, token string) []IndexContent {
 	newIndex := make([]IndexContent, 0)
 
 	for _, indexedToken := range index {
-		if indexedToken.Token != token {
+		if indexedToken.DocumentID != token {
 			newIndex = append(newIndex, indexedToken)
 		}
 	}

@@ -12,8 +12,14 @@ type IndexedDoc struct {
 }
 
 type IndexContent struct {
-	Token string
+	DocumentID  string
 	Occurrences int
+}
+
+type SearchResult struct {
+	DocumentID string
+	Occurrences int
+	Content string
 }
 
 var docs *hashmap.HashMap
@@ -88,7 +94,7 @@ func DeleteDocument(id string) error {
 	return nil
 }
 
-func Search(input string) []string {
+func Search(input string) []SearchResult {
 	tokens := Tokenize(input)
 	indexedResults := make([]IndexContent, 0)
 
@@ -96,27 +102,32 @@ func Search(input string) []string {
 		indexedTokenDocs, _ := index.Get(token)
 
 		for _, indexedTokenDoc := range indexedTokenDocs.([]IndexContent) {
-			indexedDocIdx := IndexedDocIndex(indexedResults, indexedTokenDoc.Token)
+			indexedDocIdx := IndexedDocIndex(indexedResults, indexedTokenDoc.DocumentID)
 			if indexedDocIdx >= 0 {
 				oldContent := indexedResults[indexedDocIdx]
-				indexedResults[indexedDocIdx] = IndexContent{ Token: oldContent.Token, Occurrences: oldContent.Occurrences + 1}
+				indexedResults[indexedDocIdx] = IndexContent{ DocumentID: oldContent.DocumentID, Occurrences: oldContent.Occurrences + 1}
 			} else {
 				indexedResults = append(indexedResults, indexedTokenDoc)
 			}
 		}
 	}
 
-	var indexedDocs = make([]string, 0)
+	var searchResults = make([]SearchResult, 0)
 
 	if len(indexedResults) == 0 || indexedResults == nil {
-		return []string{}
+		return []SearchResult{}
 	}
 
 	for _, result := range indexedResults {
-		document, _ := docs.Get(result.Token)
+		document, _ := docs.Get(result.DocumentID)
 
-		indexedDocs = append(indexedDocs, document.(string))
+		fmt.Println("got token:", result.DocumentID)
+		searchResults = append(searchResults, SearchResult{
+			DocumentID: result.DocumentID,
+			Occurrences: result.Occurrences,
+			Content: document.(string),
+		})
 	}
 
-	return indexedDocs
+	return searchResults
 }
